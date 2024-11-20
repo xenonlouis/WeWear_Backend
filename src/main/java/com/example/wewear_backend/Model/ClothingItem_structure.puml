@@ -1,0 +1,247 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "com.example.wewear_backend.Model.ClothingItem",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1322970774 { 
+   	label=example
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_208835418 { 
+   	label=wewear_backend
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   ClothingItem2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ClothingItem</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   category: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   color: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   imageUrl: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   material: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pattern: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   season: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   size: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   updatedAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   wardrobe: Wardrobe [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+FavoriteOutfit2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)FavoriteOutfit</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   outfit: Outfit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   user: User [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+FavoriteOutfitComment2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)FavoriteOutfitComment</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   content: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   favoriteOutfit: FavoriteOutfit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: Integer [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   user: User [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+FavoriteOutfitLike2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)FavoriteOutfitLike</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   favoriteOutfit: FavoriteOutfit [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   user: User [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Outfit2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Outfit</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   clothingItems: List&lt;ClothingItem&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   description: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   updatedAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   wardrobe: Wardrobe [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+User2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)User</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   bio: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   email: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   followers: List&lt;User&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   followings: List&lt;User&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   password: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   profileImage: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   updatedAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   username: String [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Wardrobe2004977394[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Wardrobe</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   clothingItems: List&lt;ClothingItem&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   createdAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   id: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   outfits: List&lt;Outfit&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   updatedAt: LocalDateTime [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   user: User [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+ClothingItem2004977394 -> Wardrobe2004977394[label="wardrobe
+[0..1]"];
+FavoriteOutfit2004977394 -> Outfit2004977394[label="outfit
+[0..1]"];
+FavoriteOutfitComment2004977394 -> FavoriteOutfit2004977394[label="favoriteOutfit
+[0..1]"];
+FavoriteOutfitLike2004977394 -> FavoriteOutfit2004977394[label="favoriteOutfit
+[0..1]"];
+Outfit2004977394 -> ClothingItem2004977394[label="clothingItems
+[0..*]"];
+Outfit2004977394 -> Wardrobe2004977394[label="wardrobe
+[0..1]"];
+Wardrobe2004977394 -> ClothingItem2004977394[label="clothingItems
+[0..*]"];
+Wardrobe2004977394 -> Outfit2004977394[label="outfits
+[0..*]"];
+Wardrobe2004977394 -> User2004977394[label="user
+[0..1]"];
+    
+}
+@enduml
