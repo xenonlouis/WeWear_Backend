@@ -24,5 +24,8 @@ COPY src ./src
 # Package the application
 RUN ./mvnw package -DskipTests
 
+# Get the name of the built JAR file
+RUN mv target/*.jar target/app.jar
+
 # Run the application
-ENTRYPOINT ["java","-jar","/app/target/*.jar"] 
+ENTRYPOINT ["java","-jar","/app/target/app.jar"] 

@@ -2,9 +2,9 @@ services:
   - type: web
     name: wewear-backend
     env: docker
-    region: singapore  # or choose your preferred region
+    region: frankfurt  # Changed to Frankfurt (EU) region
     buildCommand: chmod +x mvnw && ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
+    startCommand: java -jar target/app.jar
     envVars:
       - key: JAVA_HOME
         value: /opt/java/openjdk
