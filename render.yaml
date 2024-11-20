@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: wewear-backend
+    env: docker
+    region: singapore  # or choose your preferred region
+    buildCommand: chmod +x mvnw && ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      - key: JAVA_HOME
+        value: /opt/java/openjdk
+      - key: WEWEAR_DB_URL
+        fromDatabase:
+          name: wewear_db
+          property: connectionString
+      - key: WEWEAR_DB_USERNAME
+        fromDatabase:
+          name: wewear_db
+          property: username
+      - key: WEWEAR_DB_PASSWORD
+        fromDatabase:
+          name: wewear_db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+
+databases:
+  - name: wewear_db
+    plan: free
+    ipAllowList: [] 
