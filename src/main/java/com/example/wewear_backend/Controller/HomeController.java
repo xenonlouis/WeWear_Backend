@@ -1,4 +1,4 @@
-package com.example.wewear_backend.controllers;
+package com.example.wewear_backend.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
