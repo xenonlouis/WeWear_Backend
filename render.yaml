@@ -8,8 +8,6 @@ services:
     envVars:
       - key: JAVA_HOME
         value: /opt/java/openjdk
-      - key: OPENWEATHER_API_KEY
-        sync: false
       - key: WEWEAR_DB_URL
         fromDatabase:
           name: wewear_db
