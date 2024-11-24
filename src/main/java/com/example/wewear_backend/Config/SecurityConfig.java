@@ -5,103 +5,76 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@ComponentScan(basePackages = "com.example.wewear_backend")
+@EnableMethodSecurity
 public class SecurityConfig {
-
-    private final CustomUserDetailsService customUserDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
-
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtRequestFilter jwtRequestFilter) {
-        this.customUserDetailsService = customUserDetailsService;
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
-   //swagger stuff
-    private static final String[] SWAGGER_WHITELIST={
-            "/swagger-ui/**",
-           "/v3/api-docs/**",
-           "/swagger-resources/**",
-           "/swagger-resources",
-           "/swagger-ui.html",
-
-   };
-
-
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-
-                                .requestMatchers(SWAGGER_WHITELIST).permitAll()
-
-                                .anyRequest().authenticated()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/error"
+                        ).permitAll()
+                        .requestMatchers("/api/outfits/**").authenticated()
+                        .anyRequest().authenticated()
+                )
+                .cors(cors -> cors.configure(http))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(customJwtAuthenticationConverter())
+                        )
                 );
-
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    // Renamed the bean method and removed the @Bean name attribute
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put("bcrypt", new BCryptPasswordEncoder());
-        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("bcrypt", encoders);
-        passwordEncoder.setDefaultPasswordEncoderForMatches(new BCryptPasswordEncoder());
-        return passwordEncoder;
+    public JwtAuthenticationConverter customJwtAuthenticationConverter() {
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(this::extractAuthorities);
+        return converter;
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(
-//            AgentDetailsService agentDetailsService,
-//            PasswordEncoder passwordEncoder) {
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//        authenticationProvider.setUserDetailsService(agentDetailsService);
-//        authenticationProvider.setPasswordEncoder(passwordEncoder);
-//
-//        ProviderManager providerManager = new ProviderManager(authenticationProvider);
-//        providerManager.setEraseCredentialsAfterAuthentication(false);
-//
-//        return providerManager;
-//    }
+    private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://example.com")//access to mobile app
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+        List<String> permissions = jwt.getClaimAsStringList("permissions");
+        if (permissions != null) {
+            for (String permission : permissions) {
+                authorities.add(new SimpleGrantedAuthority("SCOPE_" + permission));
             }
-        };
+        }
 
+        List<String> groups = jwt.getClaimAsStringList("groups");
+        if (groups != null) {
+            for (String group : groups) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + group.toUpperCase()));
+            }
+        }
+
+        return authorities;
     }
 
 
