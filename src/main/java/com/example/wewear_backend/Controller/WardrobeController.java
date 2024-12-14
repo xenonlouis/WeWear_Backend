@@ -1,5 +1,6 @@
 package com.example.wewear_backend.Controller;
 
+import com.example.wewear_backend.Model.ClothingItem;
 import com.example.wewear_backend.Model.Wardrobe;
 import com.example.wewear_backend.Service.wardrobeService;
 import org.springframework.http.ResponseEntity;
@@ -51,4 +52,29 @@ public class WardrobeController {
         wardrobeService.deleteWardrobe(id);
         return ResponseEntity.noContent().build();
     }
+
+    //!!Ajouter pour le Wardrobe : recuperer touts les vetements d'une garde-robe par ID
+    @GetMapping("/{id}/clothing-items")
+    public ResponseEntity<List<ClothingItem>> getClothingItemsByWardrobe(@PathVariable Integer id) {
+        List<ClothingItem> clothingItems = wardrobeService.getClothingItemsByWardrobeId(id);
+        return ResponseEntity.ok(clothingItems);
+    }
+    @GetMapping("/{wardrobeId}/clothing-items/{itemId}")
+    public ResponseEntity<ClothingItem> getClothingItemById(
+            @PathVariable Integer wardrobeId,
+            @PathVariable Integer itemId
+    ) {
+        ClothingItem clothingItem = wardrobeService.getClothingItemByWardrobeIdAndClothingItemId(wardrobeId,itemId);
+        return ResponseEntity.ok(clothingItem);
+    }
+
+
+
+    //Pour aprés si on veux passer vers wardrobe a partir des Users!!!!
+    @GetMapping("/user/{userId}/clothing-items")
+    public ResponseEntity<List<ClothingItem>> getClothingItemsByUserId(@PathVariable Integer userId) {
+        List<ClothingItem> clothingItems = wardrobeService.getClothingItemsByUserId(userId);
+        return ResponseEntity.ok(clothingItems);
+    }
+
 }

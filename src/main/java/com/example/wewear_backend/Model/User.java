@@ -34,9 +34,9 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     @ManyToMany
-    @JsonIgnore
+    //@JsonIgnore
     private List<User> followers = new ArrayList<>();
     @ManyToMany
-    @JsonIgnore
+    //@JsonIgnore
     private List<User> followings = new ArrayList<>();
 }

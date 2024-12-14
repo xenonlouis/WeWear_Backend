@@ -3,11 +3,10 @@ package com.example.wewear_backend.Model;
 import com.example.wewear_backend.Model.Wardrobe;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,12 +25,30 @@ public class ClothingItem {
 
     private String name;
     private String category;
-    private String color;
+    private String occasion;
     private String size;
     private String material;
-    private String pattern;
     private String season;
     private String imageUrl;
+    private String brand;
+    private Double rating;
+    private Double price;
+    private String purchaseDate;
+    private String purchaseLink;
+
+    @ElementCollection
+    @CollectionTable(name = "clothing_colors",
+            joinColumns = @JoinColumn(name = "clothing_id"))
+
+    @Column(name = "color")
+    private List<String> colors;
+
+    @ElementCollection
+    @CollectionTable(name = "clothing_patterns",
+            joinColumns = @JoinColumn(name = "clothing_id"))
+
+    @Column(name = "pattern")
+    private List<String> patterns;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

@@ -1,9 +1,12 @@
 package com.example.wewear_backend.Controller;
 
+import com.example.wewear_backend.Model.ClothingItem;
 import com.example.wewear_backend.Model.User;
 import com.example.wewear_backend.Repository.UserRepository;
+import com.example.wewear_backend.Service.wardrobeService;
 import com.example.wewear_backend.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -87,4 +91,5 @@ public class AuthController {
         response.put("message", "Logout successful (client should discard the token).");
         return response;
     }
+
 }
