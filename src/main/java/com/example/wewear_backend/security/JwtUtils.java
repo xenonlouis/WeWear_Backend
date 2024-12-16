@@ -21,34 +21,39 @@ public class JwtUtils {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
-        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
+
     public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+        return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                    .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException ex) {
-            return false;
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token has expired");
+        } catch (JwtException e) {
+            System.out.println("Token validation error: " + e.getMessage());
         }
+        return false;
     }
 }

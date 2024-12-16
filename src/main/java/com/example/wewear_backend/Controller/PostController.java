@@ -1,8 +1,14 @@
 package com.example.wewear_backend.Controller;
 
 import com.example.wewear_backend.Model.Post;
+import com.example.wewear_backend.Model.User;
+import com.example.wewear_backend.Repository.UserRepository;
 import com.example.wewear_backend.Service.PostService;
+import com.example.wewear_backend.dto.CreatePostRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +18,15 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    @Autowired
+    private  final UserRepository userRepository;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, UserRepository userRepository) {
         this.postService = postService;
+
+        this.userRepository = userRepository;
     }
+
 
     // Récupérer toutes les publications
     @GetMapping
@@ -33,8 +44,17 @@ public class PostController {
 
     // Créer une nouvelle publication
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        Post createdPost = postService.createPost(post);
+    public ResponseEntity<Post> createPost(@RequestBody CreatePostRequest postRequest) {
+       // Obtenez l'utilisateur actuellement authentifié
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Chargez l'utilisateur depuis la base de données
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        // Créez la publication pour cet utilisateur
+        Post createdPost = postService.createPost(postRequest, user);
         return ResponseEntity.ok(createdPost);
     }
 
