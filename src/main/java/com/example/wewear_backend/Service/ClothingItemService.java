@@ -31,12 +31,17 @@ public class ClothingItemService {
         ClothingItem clothingItem = getClothingItemById(id);
         clothingItem.setName(clothingItemDetails.getName());
         clothingItem.setCategory(clothingItemDetails.getCategory());
-        clothingItem.setColor(clothingItemDetails.getColor());
+        clothingItem.setOccasion(clothingItemDetails.getOccasion());
         clothingItem.setSize(clothingItemDetails.getSize());
         clothingItem.setMaterial(clothingItemDetails.getMaterial());
-        clothingItem.setPattern(clothingItemDetails.getPattern());
         clothingItem.setSeason(clothingItemDetails.getSeason());
         clothingItem.setImageUrl(clothingItemDetails.getImageUrl());
+        clothingItem.setBrand(clothingItemDetails.getBrand());
+        clothingItem.setRating(clothingItemDetails.getRating());
+        clothingItem.setPrice(clothingItemDetails.getPrice());
+        clothingItem.setPurchaseDate(clothingItemDetails.getPurchaseDate());
+        clothingItem.setPurchaseLink(clothingItemDetails.getPurchaseLink());
+        clothingItem.setColors(clothingItemDetails.getColors());
         return clothingItemRepository.save(clothingItem);
     }
 
