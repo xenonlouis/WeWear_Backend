@@ -5,6 +5,7 @@ import com.example.wewear_backend.Service.OutfitService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -34,6 +35,9 @@ public class OutfitController {
     // Créer une nouvelle tenue
     @PostMapping
     public ResponseEntity<Outfit> createOutfit(@RequestBody Outfit outfit) {
+        LocalDateTime now = LocalDateTime.now();
+        outfit.setCreatedAt(now);
+        outfit.setUpdatedAt(now);
         Outfit createdOutfit = outfitService.createOutfit(outfit);
         return ResponseEntity.ok(createdOutfit);
     }
