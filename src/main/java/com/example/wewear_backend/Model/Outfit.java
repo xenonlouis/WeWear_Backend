@@ -1,6 +1,7 @@
 package com.example.wewear_backend.Model;
 
 import com.example.wewear_backend.Model.Wardrobe;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Outfit {
     private int id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "wardrobe_id")
     private Wardrobe wardrobe;
 

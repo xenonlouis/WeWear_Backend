@@ -1,11 +1,14 @@
 package com.example.wewear_backend.Controller;
 
 import com.example.wewear_backend.Model.ClothingItem;
+import com.example.wewear_backend.Model.Outfit;
 import com.example.wewear_backend.Model.Wardrobe;
+import com.example.wewear_backend.Service.OutfitService;
 import com.example.wewear_backend.Service.wardrobeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -13,9 +16,11 @@ import java.util.List;
 public class WardrobeController {
 
     private final wardrobeService wardrobeService;
+    private final OutfitService outfitService;
 
-    public WardrobeController(wardrobeService wardrobeService) {
+    public WardrobeController(wardrobeService wardrobeService, OutfitService outfitService) {
         this.wardrobeService = wardrobeService;
+        this.outfitService = outfitService;
     }
 
     // Récupérer toutes les garde-robes
@@ -24,6 +29,7 @@ public class WardrobeController {
         List<Wardrobe> wardrobes = wardrobeService.getAllWardrobes();
         return ResponseEntity.ok(wardrobes);
     }
+
 
     // Récupérer une garde-robe par ID
     @GetMapping("/{id}")
@@ -75,6 +81,23 @@ public class WardrobeController {
     public ResponseEntity<List<ClothingItem>> getClothingItemsByUserId(@PathVariable Integer userId) {
         List<ClothingItem> clothingItems = wardrobeService.getClothingItemsByUserId(userId);
         return ResponseEntity.ok(clothingItems);
+    }
+
+
+    //pour tester les endpoints de outfit qui ne marche pas dans le controlleur OUtfit Controller
+    @GetMapping("/outfits")
+    public ResponseEntity<List<Outfit>> getAllOutfits() {
+        List<Outfit> outfits = outfitService.getAllOutfits();
+        return ResponseEntity.ok(outfits);
+    }
+
+    @PostMapping("/outfits")
+    public ResponseEntity<Outfit> createOutfit(@RequestBody Outfit outfit) {
+        LocalDateTime now = LocalDateTime.now();
+        outfit.setCreatedAt(now);
+        outfit.setUpdatedAt(now);
+        Outfit createdOutfit = outfitService.createOutfit(outfit);
+        return ResponseEntity.ok(createdOutfit);
     }
 
 }
