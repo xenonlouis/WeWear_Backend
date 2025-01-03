@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,15 +24,20 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
 
+    public AuthController(UserRepository userRepository,
+                         PasswordEncoder passwordEncoder,
+                         JwtUtils jwtUtils,    @Autowired
+                          AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
+    }
 
     // DTO classes for requests
     public static class RegisterRequest {
@@ -62,18 +68,21 @@ public class AuthController {
         newUser.setUpdatedAt(LocalDateTime.now());
         userRepository.save(newUser);
 
+        String token = jwtUtils.generateToken(request.username);
         Map<String, String> response = new HashMap<>();
-        response.put("message", "User registered successfully");
+        response.put("token", token);
         return response;
     }
 
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody LoginRequest request) {
+       // System.out.println("HEREEEEEEEEEEEEEEEEEEEEEEEEE");
+        //System.out.println(request.username);
+        //System.out.println(request.password);
         try {
             Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.username, request.password)
+                new UsernamePasswordAuthenticationToken(request.username, request.password)
             );
-
             String token = jwtUtils.generateToken(request.username);
             Map<String, String> response = new HashMap<>();
             response.put("token", token);

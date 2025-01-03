@@ -1,51 +1,90 @@
 package com.example.wewear_backend.Controller;
 
 import com.example.wewear_backend.Model.User;
-import com.example.wewear_backend.Service.UserService;
+import com.example.wewear_backend.Repository.UserRepository;
+import com.example.wewear_backend.security.JwtUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 public class UserController {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserRepository userRepository, JwtUtils jwtUtils) {
+        this.userRepository = userRepository;
+        this.jwtUtils = jwtUtils;
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public static class UpdateUserRequest {
+        public String email;
+        public String username;
+        // Add other fields you want to allow updating
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Remove sensitive information
+        user.setPassword(null);
+        
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.ok(createdUser);
+    @PutMapping("/me")
+    public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Validate unique constraints
+        if (request.username != null && !request.username.equals(user.getUsername())) {
+            if (userRepository.existsByUsername(request.username)) {
+                return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Username already exists"));
+            }
+            user.setUsername(request.username);
+        }
+
+        if (request.email != null && !request.email.equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.email)) {
+                return ResponseEntity.badRequest()
+                    .body(new ErrorResponse("Email already exists"));
+            }
+            user.setEmail(request.email);
+        }
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        // Remove sensitive information
+        user.setPassword(null);
+        
+        return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User userDetails) {
-        User updatedUser = userService.updateUser(id, userDetails);
-        return ResponseEntity.ok(updatedUser);
-    }
+    private static class ErrorResponse {
+        private final String message;
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        public ErrorResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
     }
 }
