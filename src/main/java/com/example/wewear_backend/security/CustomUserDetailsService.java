@@ -17,9 +17,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.example.wewear_backend.Model.User appUser = userRepository.findByUsername(username)
+        com.example.wewear_backend.Model.User appUser = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-
         // In a real application, the password should already be hashed.
         return User.builder()
                 .username(appUser.getUsername())
