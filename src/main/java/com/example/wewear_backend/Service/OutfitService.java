@@ -27,14 +27,19 @@ public class OutfitService {
         return outfitRepository.save(outfit);
     }
 
-    public Outfit updateOutfit(Integer id, Outfit outfitDetails) {
-        Outfit outfit = getOutfitById(id);
-        outfit.setName(outfitDetails.getName());
-        outfit.setDescription(outfitDetails.getDescription());
+    public Outfit updateOutfit(Outfit outfit) {
         return outfitRepository.save(outfit);
     }
 
     public void deleteOutfit(Integer id) {
         outfitRepository.deleteById(id);
+    }
+
+    public List<Outfit> getOutfitsByUserId(int id) {
+        return outfitRepository.findByWardrobeId(id);
+    }
+
+    public List<Outfit> getOutfitsByWardrobeId(Integer wardrobeId) {
+        return outfitRepository.findByWardrobeId(wardrobeId);
     }
 }

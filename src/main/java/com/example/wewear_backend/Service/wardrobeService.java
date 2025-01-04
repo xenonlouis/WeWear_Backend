@@ -11,8 +11,8 @@ import java.util.List;
 
 @Service
 public class wardrobeService {
-    private  WardrobeRepository wardrobeRepository;
-    private ClothingItemRepository clothingItemRepository;
+    private final  WardrobeRepository wardrobeRepository;
+    private final  ClothingItemRepository clothingItemRepository;
 
     public wardrobeService(WardrobeRepository wardrobeRepository,ClothingItemRepository clothingItemRepository) {
         this.wardrobeRepository = wardrobeRepository;
@@ -54,13 +54,43 @@ public class wardrobeService {
                 .orElseThrow(() -> new RuntimeException("Clothing item not found"));
     }
 
-    public List<ClothingItem> getClothingItemsByUserId(Integer userId) {
-        List<Wardrobe> wardrobes = wardrobeRepository.findByUserId(userId);
-        List<ClothingItem> clothingItems = new ArrayList<>();
-        for (Wardrobe wardrobe : wardrobes) {
-            clothingItems.addAll(wardrobe.getClothingItems());
-        }
-        return clothingItems;
+
+    public List<Wardrobe> getWardrobesByUserId(Integer userId) {
+        return wardrobeRepository.findByUserId(userId);
     }
 
+    public List<ClothingItem> getClothingItemsByUserId(Integer userId) {
+        List<Wardrobe> userWardrobes = wardrobeRepository.findByUserId(userId);
+        if (userWardrobes == null || userWardrobes.isEmpty()) {
+            System.out.println("No wardrobes found for user: " + userId);
+            return new ArrayList<>();
+        }
+
+        List<ClothingItem> allItems = new ArrayList<>();
+        for (Wardrobe wardrobe : userWardrobes) {
+            List<ClothingItem> wardrobeItems = clothingItemRepository.findByWardrobeId(wardrobe.getId());
+            if (wardrobeItems != null) {
+                allItems.addAll(wardrobeItems);
+            }
+        }
+
+        return allItems;
+    }
+
+    public ClothingItem createClothingItem(ClothingItem clothingItem) {
+        // Validate that the wardrobe exists and is set
+        if (clothingItem.getWardrobe() == null ) {
+            throw new RuntimeException("Wardrobe must be set for clothing item");
+        }
+
+        // Ensure the wardrobe exists
+        Wardrobe wardrobe = wardrobeRepository.findById(clothingItem.getWardrobe().getId())
+                .orElseThrow(() -> new RuntimeException("Wardrobe not found"));
+
+        // Set the wardrobe reference
+        clothingItem.setWardrobe(wardrobe);
+
+        // Save the clothing item
+        return clothingItemRepository.save(clothingItem);
+    }
 }

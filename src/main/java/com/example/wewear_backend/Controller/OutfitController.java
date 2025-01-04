@@ -45,7 +45,7 @@ public class OutfitController {
     // Mettre à jour une tenue
     @PutMapping("/{id}")
     public ResponseEntity<Outfit> updateOutfit(@PathVariable Integer id, @RequestBody Outfit outfitDetails) {
-        Outfit updatedOutfit = outfitService.updateOutfit(id, outfitDetails);
+        Outfit updatedOutfit = outfitService.updateOutfit(outfitDetails);
         return ResponseEntity.ok(updatedOutfit);
     }
 

@@ -9,4 +9,5 @@ import java.util.List;
 public interface WardrobeRepository extends JpaRepository<Wardrobe, Integer> {
     List<Wardrobe> findByUserId(Integer userId);
 
+
 }

@@ -1,7 +1,9 @@
 package com.example.wewear_backend.Controller;
 
+import com.example.wewear_backend.Model.ClothingItem;
 import com.example.wewear_backend.Model.User;
 import com.example.wewear_backend.Repository.UserRepository;
+import com.example.wewear_backend.Service.wardrobeService;
 import com.example.wewear_backend.security.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,7 +20,11 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
 
-    public UserController(UserRepository userRepository, JwtUtils jwtUtils) {
+    private final wardrobeService wardrobeService;
+
+    public UserController(UserRepository userRepository, JwtUtils jwtUtils ,  wardrobeService wardrobeService ) {
+        this.wardrobeService = wardrobeService;
+
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
     }
@@ -42,6 +48,23 @@ public class UserController {
         
         return ResponseEntity.ok(user);
     }
+    @GetMapping("/me/clothing-items")
+    public ResponseEntity<List<ClothingItem>> getCurrentUserClothingItems(Authentication authentication) {
+        // Get username from Spring Security User
+        String username = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        System.out.println("Username: " + username);
+
+        // Find your custom User by username
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("User ID: " + user.getId());
+
+        List<ClothingItem> clothingItems = wardrobeService.getClothingItemsByUserId(user.getId());
+        System.out.println("Found clothing items: " + clothingItems.size());
+        System.out.println("Clothing items: " + clothingItems);
+        return ResponseEntity.ok(clothingItems);
+    }
+
 
     @PutMapping("/me")
     public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest request) {

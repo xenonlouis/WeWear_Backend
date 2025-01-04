@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ClothingItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

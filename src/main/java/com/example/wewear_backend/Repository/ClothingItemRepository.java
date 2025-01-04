@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface ClothingItemRepository extends JpaRepository<ClothingItem, Integer> {
     List<ClothingItem> findByWardrobeId(Integer wardrobeId);
+
     Optional<ClothingItem> findByWardrobeIdAndId(Integer wardrobeId, Integer id);
 }
