@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -75,6 +76,14 @@ public class UserController {
         
         return ResponseEntity.ok(user);
     }
+    @GetMapping("/search/{query}")
+    public ResponseEntity<List<User>> searchUsers(@PathVariable String query) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCase(query);
+        // Remove sensitive data
+        users.forEach(user -> user.setPassword(null));
+        return ResponseEntity.ok(users);
+    }
+
 
     private static class ErrorResponse {
         private final String message;
