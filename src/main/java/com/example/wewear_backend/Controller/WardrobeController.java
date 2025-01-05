@@ -6,6 +6,7 @@ import com.example.wewear_backend.Model.Wardrobe;
 import com.example.wewear_backend.Repository.UserRepository;
 import com.example.wewear_backend.Service.OutfitService;
 import com.example.wewear_backend.Service.wardrobeService;
+import com.example.wewear_backend.Service.OutfitRecommendationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +23,17 @@ public class WardrobeController {
 
     private final wardrobeService wardrobeService;
     private final OutfitService outfitService;
-    private final UserRepository userRepository; // Add this
+    private final UserRepository userRepository;
+    private final OutfitRecommendationService recommendationService;
 
     public WardrobeController(wardrobeService wardrobeService,
                               OutfitService outfitService,
-                              UserRepository userRepository) { // Add userRepository
+                              UserRepository userRepository,
+                              OutfitRecommendationService recommendationService) {
         this.wardrobeService = wardrobeService;
         this.outfitService = outfitService;
         this.userRepository = userRepository;
+        this.recommendationService = recommendationService;
     }
 
     // Get current user's wardrobes
@@ -302,6 +306,126 @@ public class WardrobeController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return null;
+    }
+
+    // Get recommended outfits for a wardrobe
+    @GetMapping("/{wardrobeId}/outfits/recommendations")
+    public ResponseEntity<List<Outfit>> getRecommendedOutfits(
+            @PathVariable Integer wardrobeId,
+            @RequestParam(required = false) String season,
+            @RequestParam(required = false) String occasion,
+            Authentication authentication) {
+        String username = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify wardrobe ownership
+        Wardrobe wardrobe = wardrobeService.getWardrobeById(wardrobeId);
+        if (!(wardrobe.getUser().getId() == user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        List<Outfit> recommendations = recommendationService.getRecommendedOutfits(wardrobe, season, occasion);
+        return ResponseEntity.ok(recommendations);
+    }
+
+    // Get popular outfits for a wardrobe
+    @GetMapping("/{wardrobeId}/outfits/popular")
+    public ResponseEntity<List<Outfit>> getPopularOutfits(
+            @PathVariable Integer wardrobeId,
+            Authentication authentication) {
+        String username = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify wardrobe ownership
+        Wardrobe wardrobe = wardrobeService.getWardrobeById(wardrobeId);
+        if (!(wardrobe.getUser().getId() == user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        List<Outfit> popularOutfits = recommendationService.getPopularOutfits(wardrobe);
+        return ResponseEntity.ok(popularOutfits);
+    }
+
+    // Get similar outfits for a specific outfit in a wardrobe
+    @GetMapping("/{wardrobeId}/outfits/{outfitId}/similar")
+    public ResponseEntity<List<Outfit>> getSimilarOutfits(
+            @PathVariable Integer wardrobeId,
+            @PathVariable Integer outfitId,
+            Authentication authentication) {
+        String username = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify wardrobe ownership
+        Wardrobe wardrobe = wardrobeService.getWardrobeById(wardrobeId);
+        if (!(wardrobe.getUser().getId() == user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Outfit outfit = outfitService.getOutfitById(outfitId);
+        if (!Integer.valueOf(outfit.getWardrobe().getId()).equals(wardrobeId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        List<Outfit> similarOutfits = recommendationService.getSimilarOutfits(outfit);
+        return ResponseEntity.ok(similarOutfits);
+    }
+
+    // Rate an outfit in a wardrobe
+    @PostMapping("/{wardrobeId}/outfits/{outfitId}/rate")
+    public ResponseEntity<Outfit> rateOutfit(
+            @PathVariable Integer wardrobeId,
+            @PathVariable Integer outfitId,
+            @RequestParam Double rating,
+            Authentication authentication) {
+        String username = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify wardrobe ownership
+        Wardrobe wardrobe = wardrobeService.getWardrobeById(wardrobeId);
+        if (!(wardrobe.getUser().getId() == user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Outfit outfit = outfitService.getOutfitById(outfitId);
+        if (!Integer.valueOf(outfit.getWardrobe().getId()).equals(wardrobeId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        outfit.setRating(rating);
+        outfit.setUpdatedAt(LocalDateTime.now());
+        Outfit updatedOutfit = outfitService.updateOutfit(outfit);
+        return ResponseEntity.ok(updatedOutfit);
+    }
+
+    // Increment times worn for an outfit in a wardrobe
+    @PostMapping("/{wardrobeId}/outfits/{outfitId}/wear")
+    public ResponseEntity<Outfit> incrementOutfitWear(
+            @PathVariable Integer wardrobeId,
+            @PathVariable Integer outfitId,
+            Authentication authentication) {
+        String username = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify wardrobe ownership
+        Wardrobe wardrobe = wardrobeService.getWardrobeById(wardrobeId);
+        if (!(wardrobe.getUser().getId() == user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Outfit outfit = outfitService.getOutfitById(outfitId);
+        if (!Integer.valueOf(outfit.getWardrobe().getId()).equals(wardrobeId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        outfit.setTimesWorn(outfit.getTimesWorn() + 1);
+        outfit.setUpdatedAt(LocalDateTime.now());
+        Outfit updatedOutfit = outfitService.updateOutfit(outfit);
+        return ResponseEntity.ok(updatedOutfit);
     }
 }
 

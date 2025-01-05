@@ -62,7 +62,7 @@ public class TestDataService {
         Map<String, ClothingItem> items = new HashMap<>();
 
         // Tops
-        items.put("whiteTee", findOrCreateClothingItem("T-Shirt Basique en Coton Blanc", "Tops", wardrobe,
+        items.put("whiteTee", findOrCreateClothingItem("White T-Shirt", "Top", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("M");
@@ -70,11 +70,11 @@ public class TestDataService {
                 item.setSeason("Summer");
                 item.setImageUrl("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3");
                 item.setBrand("Basic Co");
-                item.setColors(Arrays.asList("Blanc"));
+                item.setColors(Arrays.asList("White"));
                 item.setPatterns(Collections.emptyList());
             }));
         
-        items.put("navyShirt", findOrCreateClothingItem("Chemise Business Bleu Marine", "Tops", wardrobe,
+        items.put("navyShirt", findOrCreateClothingItem("Navy Business Shirt", "Top", wardrobe,
             item -> {
                 item.setOccasion("Business");
                 item.setSize("M");
@@ -82,12 +82,12 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?ixlib=rb-4.0.3");
                 item.setBrand("Business Basics");
-                item.setColors(Arrays.asList("Marine"));
+                item.setColors(Arrays.asList("Navy"));
                 item.setPatterns(Collections.emptyList());
             }));
 
         // Bottoms
-        items.put("jeans", findOrCreateClothingItem("Jean Classique Bleu Marine", "Pantalons", wardrobe,
+        items.put("jeans", findOrCreateClothingItem("Classic Navy Jeans", "Bottom", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("32");
@@ -95,11 +95,11 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3");
                 item.setBrand("Denim Co");
-                item.setColors(Arrays.asList("Bleu Marine"));
+                item.setColors(Arrays.asList("Navy"));
                 item.setPatterns(Collections.emptyList());
             }));
         
-        items.put("dressSlacks", findOrCreateClothingItem("Pantalon Business Noir Classique", "Pantalons", wardrobe,
+        items.put("dressSlacks", findOrCreateClothingItem("Classic Black Business Pants", "Bottom", wardrobe,
             item -> {
                 item.setOccasion("Business");
                 item.setSize("32");
@@ -107,12 +107,12 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1594938298603-c8148c4dae35?ixlib=rb-4.0.3");
                 item.setBrand("Business Basics");
-                item.setColors(Arrays.asList("Noir"));
+                item.setColors(Arrays.asList("Black"));
                 item.setPatterns(Collections.emptyList());
             }));
 
         // Skirt
-        items.put("pleatedSkirt", findOrCreateClothingItem("Jupe Plissée Business Marine", "Jupes", wardrobe,
+        items.put("pleatedSkirt", findOrCreateClothingItem("Navy Business Pleated Skirt", "Bottom", wardrobe,
             item -> {
                 item.setOccasion("Business");
                 item.setSize("M");
@@ -120,12 +120,12 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?ixlib=rb-4.0.3");
                 item.setBrand("Business Basics");
-                item.setColors(Arrays.asList("Marine"));
+                item.setColors(Arrays.asList("Navy"));
                 item.setPatterns(Collections.emptyList());
             }));
 
         // Dress
-        items.put("summerDress", findOrCreateClothingItem("Robe d'Été Fleurie Bleu et Blanc", "Robes", wardrobe,
+        items.put("summerDress", findOrCreateClothingItem("Blue and White Floral Summer Dress", "Dress", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("M");
@@ -133,12 +133,12 @@ public class TestDataService {
                 item.setSeason("Summer");
                 item.setImageUrl("https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3");
                 item.setBrand("Summer Style");
-                item.setColors(Arrays.asList("Bleu", "Blanc"));
+                item.setColors(Arrays.asList("Blue", "White"));
                 item.setPatterns(Arrays.asList("Floral"));
             }));
 
         // Outerwear
-        items.put("blazer", findOrCreateClothingItem("Blazer Business Noir Classique", "Vêtements d'extérieur", wardrobe,
+        items.put("blazer", findOrCreateClothingItem("Classic Black Business Blazer", "Top", wardrobe,
             item -> {
                 item.setOccasion("Business");
                 item.setSize("M");
@@ -146,12 +146,12 @@ public class TestDataService {
                 item.setSeason("Spring");
                 item.setImageUrl("https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3");
                 item.setBrand("Business Basics");
-                item.setColors(Arrays.asList("Noir"));
+                item.setColors(Arrays.asList("Black"));
                 item.setPatterns(Collections.emptyList());
             }));
 
-        // Shoes - Create unique shoes for each outfit
-        items.put("casualSneakers1", findOrCreateClothingItem("Baskets Casual Blanches Sport 1", "Chaussures", wardrobe,
+        // Shoes
+        items.put("casualSneakers1", findOrCreateClothingItem("White Casual Sport Sneakers 1", "Shoes", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("42");
@@ -159,11 +159,11 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1597248881519-db089d3744a5?ixlib=rb-4.0.3");
                 item.setBrand("Comfort Walk");
-                item.setColors(Arrays.asList("Blanc"));
+                item.setColors(Arrays.asList("White"));
                 item.setPatterns(Collections.emptyList());
             }));
         
-        items.put("oxfords", findOrCreateClothingItem("Chaussures Business Oxford Noires", "Chaussures", wardrobe,
+        items.put("oxfords", findOrCreateClothingItem("Black Business Oxford Shoes", "Shoes", wardrobe,
             item -> {
                 item.setOccasion("Business");
                 item.setSize("42");
@@ -171,11 +171,11 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?ixlib=rb-4.0.3");
                 item.setBrand("Business Basics");
-                item.setColors(Arrays.asList("Noir"));
+                item.setColors(Arrays.asList("Black"));
                 item.setPatterns(Collections.emptyList());
             }));
 
-        items.put("casualSneakers2", findOrCreateClothingItem("Baskets Casual Blanches Sport 2", "Chaussures", wardrobe,
+        items.put("casualSneakers2", findOrCreateClothingItem("White Casual Sport Sneakers 2", "Shoes", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("42");
@@ -183,12 +183,12 @@ public class TestDataService {
                 item.setSeason("Summer");
                 item.setImageUrl("https://images.unsplash.com/photo-1600269452121-4f2416e55c28?ixlib=rb-4.0.3");
                 item.setBrand("Comfort Walk");
-                item.setColors(Arrays.asList("Blanc"));
+                item.setColors(Arrays.asList("White"));
                 item.setPatterns(Collections.emptyList());
             }));
 
         // Bags
-        items.put("tote", findOrCreateClothingItem("Grand Sac Fourre-tout Casual Beige", "Sacs", wardrobe,
+        items.put("tote", findOrCreateClothingItem("Large Casual Beige Tote Bag", "Accessories", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("One Size");
@@ -201,7 +201,7 @@ public class TestDataService {
             }));
 
         // Hats
-        items.put("sunHat", findOrCreateClothingItem("Chapeau de Soleil d'Été Beige", "Chapeaux", wardrobe,
+        items.put("sunHat", findOrCreateClothingItem("Beige Summer Sun Hat", "Accessories", wardrobe,
             item -> {
                 item.setOccasion("Casual");
                 item.setSize("One Size");
@@ -214,7 +214,7 @@ public class TestDataService {
             }));
 
         // Accessories
-        items.put("belt", findOrCreateClothingItem("Ceinture Business Cuir Noir", "Bijoux", wardrobe,
+        items.put("belt", findOrCreateClothingItem("Black Leather Business Belt", "Accessories", wardrobe,
             item -> {
                 item.setOccasion("All");
                 item.setSize("32");
@@ -222,11 +222,11 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1624222247344-550fb60583dc?ixlib=rb-4.0.3");
                 item.setBrand("Accessories Co");
-                item.setColors(Arrays.asList("Noir"));
+                item.setColors(Arrays.asList("Black"));
                 item.setPatterns(Collections.emptyList());
             }));
         
-        items.put("watch", findOrCreateClothingItem("Montre Classique Argent", "Bijoux", wardrobe,
+        items.put("watch", findOrCreateClothingItem("Classic Silver Watch", "Accessories", wardrobe,
             item -> {
                 item.setOccasion("All");
                 item.setSize("One Size");
@@ -234,45 +234,51 @@ public class TestDataService {
                 item.setSeason("All");
                 item.setImageUrl("https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?ixlib=rb-4.0.3");
                 item.setBrand("Time Style");
-                item.setColors(Arrays.asList("Argent"));
+                item.setColors(Arrays.asList("Silver"));
                 item.setPatterns(Collections.emptyList());
             }));
 
-        // Create outfits with unique names and unique shoes
+        // Create outfits with ratings and times worn
         // Casual Summer Outfit
-        findOrCreateOutfit("Tenue Casual d'Été avec Jeans", wardrobe,
+        findOrCreateOutfit("Casual Summer Day", wardrobe,
             outfit -> {
-                outfit.setDescription("Parfait pour une journée ensoleillée décontractée");
+                outfit.setDescription("Perfect for a sunny casual day");
                 outfit.setSeason("Summer");
                 outfit.setOccasion("Casual");
                 outfit.setTop(items.get("whiteTee"));
                 outfit.setBottom(items.get("jeans"));
-                outfit.setShoes(items.get("casualSneakers1")); // Using first pair of sneakers
+                outfit.setShoes(items.get("casualSneakers1"));
                 outfit.setAccessories(Arrays.asList(items.get("belt"), items.get("sunHat")));
+                outfit.setRating(4.5);
+                outfit.setTimesWorn(5);
             });
 
         // Business Outfit
-        findOrCreateOutfit("Tenue Business Classique", wardrobe,
+        findOrCreateOutfit("Classic Business Look", wardrobe,
             outfit -> {
-                outfit.setDescription("Pour les réunions professionnelles importantes");
+                outfit.setDescription("Professional attire for important meetings");
                 outfit.setSeason("All");
                 outfit.setOccasion("Business");
                 outfit.setTop(items.get("navyShirt"));
                 outfit.setBottom(items.get("dressSlacks"));
                 outfit.setOuterwear(items.get("blazer"));
-                outfit.setShoes(items.get("oxfords")); // Using oxford shoes
+                outfit.setShoes(items.get("oxfords"));
                 outfit.setAccessories(Arrays.asList(items.get("belt"), items.get("watch")));
+                outfit.setRating(4.8);
+                outfit.setTimesWorn(8);
             });
 
         // Summer Dress Outfit
-        findOrCreateOutfit("Tenue Robe d'Été Élégante", wardrobe,
+        findOrCreateOutfit("Elegant Summer Dress", wardrobe,
             outfit -> {
-                outfit.setDescription("Tenue d'été légère et sophistiquée");
+                outfit.setDescription("Light and sophisticated summer ensemble");
                 outfit.setSeason("Summer");
                 outfit.setOccasion("Casual");
                 outfit.setDress(items.get("summerDress"));
-                outfit.setShoes(items.get("casualSneakers2")); // Using second pair of sneakers
+                outfit.setShoes(items.get("casualSneakers2"));
                 outfit.setAccessories(Arrays.asList(items.get("watch"), items.get("sunHat"), items.get("tote")));
+                outfit.setRating(4.2);
+                outfit.setTimesWorn(3);
             });
     }
 
