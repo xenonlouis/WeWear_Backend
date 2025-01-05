@@ -5,9 +5,11 @@ import com.example.wewear_backend.Model.Wardrobe;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OutfitRepository extends JpaRepository<Outfit, Integer> {
 
     List<Outfit> findByWardrobeId(Integer userId);
+    Optional<Outfit> findByWardrobeIdAndName(Integer wardrobeId, String name);
 
 }

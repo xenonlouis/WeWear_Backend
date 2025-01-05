@@ -11,4 +11,6 @@ public interface ClothingItemRepository extends JpaRepository<ClothingItem, Inte
     List<ClothingItem> findByWardrobeId(Integer wardrobeId);
 
     Optional<ClothingItem> findByWardrobeIdAndId(Integer wardrobeId, Integer id);
+
+    Optional<ClothingItem> findByWardrobeIdAndNameAndCategory(Integer wardrobeId, String name, String category);
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import jakarta.persistence.*; // Changed to jakarta.persistence.*
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,11 +32,10 @@ public class Wardrobe {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "wardrobe")
+    @OneToMany(mappedBy = "wardrobe", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ClothingItem> clothingItems;
 
-    @OneToMany(mappedBy = "wardrobe")
+    @OneToMany(mappedBy = "wardrobe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Outfit> outfits;
-
 }

@@ -1,6 +1,5 @@
 package com.example.wewear_backend.Model;
 
-import com.example.wewear_backend.Model.Wardrobe;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,11 +33,49 @@ public class Outfit {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Structured outfit composition
+    @ManyToOne
+    @JoinColumn(name = "top_id")
+    private ClothingItem top;
+    
+    @ManyToOne
+    @JoinColumn(name = "bottom_id")
+    private ClothingItem bottom;
+    
+    @ManyToOne
+    @JoinColumn(name = "dress_id")
+    private ClothingItem dress;
+    
+    @ManyToOne
+    @JoinColumn(name = "outerwear_id")
+    private ClothingItem outerwear;
+    
+    @ManyToOne
+    @JoinColumn(name = "shoes_id")
+    private ClothingItem shoes;
+    
     @ManyToMany
     @JoinTable(
-            name = "outfit_clothing_item",
-            joinColumns = @JoinColumn(name = "outfit_id"),
-            inverseJoinColumns = @JoinColumn(name = "clothing_item_id")
+        name = "outfit_accessories",
+        joinColumns = @JoinColumn(name = "outfit_id"),
+        inverseJoinColumns = @JoinColumn(name = "clothing_item_id")
     )
-    private List<ClothingItem> clothingItems;
+    private List<ClothingItem> accessories;
+
+    // Recommendation-related fields
+    private String season;
+    private String occasion;
+    private Double rating;
+    private Integer timesWorn;
+
+    @ElementCollection
+    @CollectionTable(
+        name = "outfit_tags",
+        joinColumns = @JoinColumn(name = "outfit_id")
+    )
+    @Column(name = "tag")
+    private List<String> tags;
+
+    // For outfit preview
+    private String imageUrl;
 }
