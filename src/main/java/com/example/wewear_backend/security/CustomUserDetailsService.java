@@ -17,13 +17,23 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.example.wewear_backend.Model.User appUser = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-        // In a real application, the password should already be hashed.
+        // Add debug logging
+        System.out.println("Attempting to load user with username: " + username);
+
+        // Try to find user by both username and email
+        com.example.wewear_backend.Model.User appUser = userRepository.findByUsername(username)
+                .orElseGet(() -> userRepository.findByEmail(username)
+                        .orElseThrow(() -> {
+                            System.out.println("User not found with username/email: " + username);
+                            return new UsernameNotFoundException("User not found with username/email: " + username);
+                        }));
+
+        System.out.println("Found user: " + appUser.getUsername());
+
         return User.builder()
                 .username(appUser.getUsername())
                 .password(appUser.getPassword())
                 .authorities("USER")
                 .build();
     }
-}
+    }

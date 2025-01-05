@@ -4,14 +4,16 @@ import com.example.wewear_backend.Model.ClothingItem;
 import com.example.wewear_backend.Model.User;
 import com.example.wewear_backend.Repository.UserRepository;
 import com.example.wewear_backend.Service.wardrobeService;
+import com.example.wewear_backend.dto.UserDto;
 import com.example.wewear_backend.security.JwtUtils;
+import org.hibernate.Hibernate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,14 +41,29 @@ public class UserController {
     public ResponseEntity<?> getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        
+
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Remove sensitive information
         user.setPassword(null);
-        
-        return ResponseEntity.ok(user);
+
+
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
+        response.put("profileImage", user.getProfileImage());
+        response.put("bio", user.getBio());
+        response.put("createdAt", user.getCreatedAt());
+        response.put("updatedAt", user.getUpdatedAt());
+        response.put("followers", user.getFollowersWithoutRecursion());
+        response.put("followings", user.getFollowingsWithoutRecursion());
+        response.put("followersCount", user.getFollowersCount());
+        response.put("followingsCount", user.getFollowingsCount());
+
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/me/clothing-items")
     public ResponseEntity<List<ClothingItem>> getCurrentUserClothingItems(Authentication authentication) {
@@ -119,4 +136,109 @@ public class UserController {
             return message;
         }
     }
+    //follow
+    @PostMapping("/{id}/follow")
+    public ResponseEntity<?> followUser(@PathVariable Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User userDetails =
+                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+
+        User currentUser = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        User userToFollow = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User to follow not found"));
+
+        if (currentUser.getId() == id) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Cannot follow yourself"));
+        }
+
+        // Initialize collections if null
+        if (currentUser.getFollowings() == null) {
+            currentUser.setFollowings(new ArrayList<>());
+        }
+        if (userToFollow.getFollowers() == null) {
+            userToFollow.setFollowers(new ArrayList<>());
+        }
+
+        // Add to both collections if not already following
+        if (!currentUser.getFollowings().contains(userToFollow)) {
+            currentUser.getFollowings().add(userToFollow);
+            userToFollow.getFollowers().add(currentUser);
+
+            // Save both users
+            userRepository.save(currentUser);
+            userRepository.save(userToFollow);
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Followed user successfully",
+                "followersCount", userToFollow.getFollowers().size(),
+                "followingCount", currentUser.getFollowings().size()
+        ));
+    }
+    @DeleteMapping("/{id}/unfollow")
+    public ResponseEntity<?> unfollowUser(@PathVariable Integer id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Current user not found"));
+
+        User userToUnfollow = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User to unfollow not found"));
+
+        if (!currentUser.getFollowings().contains(userToUnfollow)) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("You are not following this user"));
+        }
+
+        currentUser.getFollowings().remove(userToUnfollow);
+        userToUnfollow.getFollowers().remove(currentUser);
+
+        userRepository.save(currentUser);
+        userRepository.save(userToUnfollow);
+
+        return ResponseEntity.ok("Unfollowed user successfully");
+    }
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<?> getFollowers(@PathVariable Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(user.getFollowers());
+    }
+
+    @GetMapping("/{id}/following")
+    public ResponseEntity<?> getFollowing(@PathVariable Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(user.getFollowings());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
+        response.put("profileImage", user.getProfileImage());
+        response.put("bio", user.getBio());
+        response.put("createdAt", user.getCreatedAt());
+        response.put("updatedAt", user.getUpdatedAt());
+        response.put("followers", user.getFollowersWithoutRecursion());
+        response.put("followings", user.getFollowingsWithoutRecursion());
+        response.put("followersCount", user.getFollowersCount());
+        response.put("followingsCount", user.getFollowingsCount());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
 }
+
+

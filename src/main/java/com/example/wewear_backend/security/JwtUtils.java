@@ -39,6 +39,7 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        System.out.println("Username from token: " + claims.getSubject());
         return claims.getSubject();
     }
 
