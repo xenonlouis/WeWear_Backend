@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,10 +43,13 @@ public class UserController {
         
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new RuntimeException("User not found"));
-
+        System.out.println("User flowing HZERERERERERERRE");
+        System.out.println(user.getFollowings());
         // Remove sensitive information
         user.setPassword(null);
-        
+        user.setFollowers(new ArrayList<User>());
+        user.setFollowings(new ArrayList<User>());
+
         return ResponseEntity.ok(user);
     }
     @GetMapping("/me/clothing-items")

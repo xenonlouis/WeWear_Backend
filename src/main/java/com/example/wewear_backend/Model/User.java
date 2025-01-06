@@ -1,22 +1,22 @@
 package com.example.wewear_backend.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*; // Changed to jakarta.persistence.*
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +33,37 @@ public class User {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    @ManyToMany
+    @ManyToMany()
     //@JsonIgnore
     private List<User> followers = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany()
+
     //@JsonIgnore
     private List<User> followings = new ArrayList<>();
+    @JsonIgnore
+    public List<User> getFollowersWithoutRecursion() {
+        return followers.stream()
+                .map(user -> {
+                    User u = new User();
+                    u.setId(user.getId());
+                    u.setUsername(user.getUsername());
+                    u.setProfileImage(user.getProfileImage());
+                    return u;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public List<User> getFollowingsWithoutRecursion() {
+        return followings.stream()
+                .map(user -> {
+                    User u = new User();
+                    u.setId(user.getId());
+                    u.setUsername(user.getUsername());
+                    u.setProfileImage(user.getProfileImage());
+                    return u;
+                })
+                .collect(Collectors.toList());
+}
+
 }
